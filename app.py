@@ -18,6 +18,9 @@ class RecommenderApp:
         """Initialize the recommender by loading saved components."""
         st.title("🍽️ Restaurant Recommendation System")
         
+        # Add restaurant image
+        st.image("https://placehold.co/600x400?text=Restaurant+Recommendations", caption="Find your perfect dining experience")
+        
         # Initialize Bedrock client
         self.bedrock_client = boto3.client(
             service_name="bedrock-runtime",
@@ -249,8 +252,11 @@ class RecommenderApp:
         
         return context
     
-    def search(self, query, top_k=5):
-        """Perform hybrid search with the given query."""
+    def search(self, query):
+        """Perform hybrid search with the given query, returning only top 3 results."""
+        # Fixed top_k to 3 as requested
+        top_k = 3
+        
         # Step 1: Retrieve with TF-IDF
         tfidf_results = self.retrieve_with_tfidf(query, 50)
         
@@ -273,7 +279,7 @@ class RecommenderApp:
             # Fallback to TF-IDF results only
             combined = tfidf_results
         
-        # Sort by score and limit results
+        # Sort by score and limit results to top 3
         return sorted(combined, key=lambda x: x.get("score", 0), reverse=True)[:top_k]
     
     def generate_recommendation(self, query, results):
@@ -354,8 +360,6 @@ class RecommenderApp:
                 st.write(f"**Relevance Score:** {result.get('score', 0):.4f}")
 
 def main():
-
-     
     # Initialize the app
     app = RecommenderApp()
     
@@ -366,9 +370,6 @@ def main():
     query = st.text_input("Enter your restaurant or food preference:", 
                            placeholder="e.g., spicy vegetarian food in san francisco")
     
-    # Number of results slider
-    top_k = st.slider("Number of Recommendations", min_value=1, max_value=10, value=5)
-    
     # Search button
     if st.button("Search Recommendations"):
         if query:
@@ -376,8 +377,8 @@ def main():
             start_time = time.time()
             
             try:
-                # Perform search to get results
-                results = app.search(query, top_k)
+                # Perform search to get results (always returns top 3)
+                results = app.search(query)
                 
                 # Generate LLM recommendation
                 if results:
