@@ -19,7 +19,7 @@ class RecommenderApp:
         st.title("🍽️ Restaurant Recommendation System")
         
         # Add restaurant image
-        st.image("https://placehold.co/600x400?text=Restaurant+Recommendations", caption="Find your perfect dining experience")
+        st.image("https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/a8/91/dc/enjoy-upscale-modern.jpg?w=1400&h=800&s=1", caption="Find your perfect dining experience")
         
         # Initialize Bedrock client
         self.bedrock_client = boto3.client(
