@@ -22,8 +22,8 @@ class RecommenderApp:
         self.bedrock_client = boto3.client(
             service_name="bedrock-runtime",
             region_name="us-east-2",
-            aws_access_key_id=os.getenv("aws_access_key_id"),
-            aws_secret_access_key=os.getenv("aws_secret_access_key")
+            aws_access_key_id=st.secrets["aws_access_key_id"],
+            aws_secret_access_key=st.secrets["aws_secret_access_key"]
         )
         
         # Load components
@@ -198,7 +198,7 @@ class RecommenderApp:
         """Call AWS Bedrock Claude model to generate a response."""
         try:
             payload = {
-                "modelId": os.getenv("inference_profile"),
+                "modelId": st.secrets["inference_profile"],
                 "body": json.dumps({
                     "anthropic_version": "bedrock-2023-05-31",
                     "max_tokens": 500,
@@ -355,9 +355,6 @@ class RecommenderApp:
 
 def main():
 
-    print(os.getenv("inference_profile"))
-    print(os.getenv("aws_access_key_id"))
-    print(os.getenv("aws_secret_access_key"))
      
     # Initialize the app
     app = RecommenderApp()
